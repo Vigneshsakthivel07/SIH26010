@@ -14,8 +14,14 @@ const pool = new pg.Pool({
   connectionTimeoutMillis: 2000,
 });
 
-pool.on('connect', () => {
-  console.log('[PostGIS] Connected to spatial database pool successfully');
+// Actively test the connection when the server starts
+pool.query('SELECT NOW()', (err, res) => {
+  if (err) {
+    console.error('❌ [PostGIS] Database Connection Failed:', err.message);
+    console.error('Please check your .env credentials and ensure PostgreSQL is running.');
+  } else {
+    console.log('✅ [PostGIS] Connected to spatial database pool successfully');
+  }
 });
 
 pool.on('error', (err) => {
